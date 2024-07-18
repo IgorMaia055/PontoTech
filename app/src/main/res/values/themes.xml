@@ -1,0 +1,10 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.PontoTech" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Cor da barra de notificação -->
+        <item name="colorPrimaryDark">#000000</item>
+        <!-- Customize your theme here -->
+    </style>
+
+    <style name="Theme.PontoTech" parent="Base.Theme.PontoTech" />
+</resources>

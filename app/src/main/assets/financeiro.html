@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PontoTech</title>
+    <script src="sql-wasm.js"></script>
+
+    <script src="assets/js/connection.js"></script>
+
+    <script src="db/sql.js"></script>
+
+    <script src="services/login.js"></script>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
+    <!-- AJAX E JQUERY -->
+    <script src="assets/js/jquery.js"></script>
+
+    <style>
+        /* Esconde o input */
+        
+        input[type='file'] {
+            display: none
+        }
+        /* Aparência que terá o seletor de arquivo */
+        
+        #labelImage {
+            margin: 10px;
+            padding: 6px 20px
+        }
+        
+        .listBorder {
+            border: 1px solid rgba(9, 9, 9, 0.156);
+            background-color: rgba(255, 255, 255, 0.423);
+            padding: 6px;
+        }
+        
+        .listInfo {
+            border-radius: 10px;
+        }
+        
+        .btn-invisibled {
+            border: 0;
+            background-color: rgba(240, 248, 255, 0);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="aviso_tel" class="avisoTel" hidden>
+        <h3>
+            Por favor, Utilize um SmartPhone!
+        </h3>
+    </div>
+
+    <div class="loading">
+        <div class="spinner-border text-danger" id="load" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <nav style="position: fixed; bottom: 0; width: 100%; z-index: 1;" id="nav" hidden>
+        <div class="text-center" style="background-color: #E64F1C; display: flex; justify-content: center;">
+            <ul class="nav nav-pills" style="padding: 10px;">
+                <li class="nav-item me-5">
+                    <a href="financeiro.html" class="text-decoration-none text-light" onclick="load()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-piggy-bank-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M7.964 1.527c-2.977 0-5.571 1.704-6.32 4.125h-.55A1 1 0 0 0 .11 6.824l.254 1.46a1.5 1.5 0 0 0 1.478 1.243h.263c.3.513.688.978 1.145 1.382l-.729 2.477a.5.5 0 0 0 .48.641h2a.5.5 0 0 0 .471-.332l.482-1.351c.635.173 1.31.267 2.011.267.707 0 1.388-.095 2.028-.272l.543 1.372a.5.5 0 0 0 .465.316h2a.5.5 0 0 0 .478-.645l-.761-2.506C13.81 9.895 14.5 8.559 14.5 7.069q0-.218-.02-.431c.261-.11.508-.266.705-.444.315.306.815.306.815-.417 0 .223-.5.223-.461-.026a1 1 0 0 0 .09-.255.7.7 0 0 0-.202-.645.58.58 0 0 0-.707-.098.74.74 0 0 0-.375.562c-.024.243.082.48.32.654a2 2 0 0 1-.259.153c-.534-2.664-3.284-4.595-6.442-4.595m7.173 3.876a.6.6 0 0 1-.098.21l-.044-.025c-.146-.09-.157-.175-.152-.223a.24.24 0 0 1 .117-.173c.049-.027.08-.021.113.012a.2.2 0 0 1 .064.199m-8.999-.65a.5.5 0 1 1-.276-.96A7.6 7.6 0 0 1 7.964 3.5c.763 0 1.497.11 2.18.315a.5.5 0 1 1-.287.958A6.6 6.6 0 0 0 7.964 4.5c-.64 0-1.255.09-1.826.254ZM5 6.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0" />
+                        </svg>
+                    </a>
+                </li>
+
+                <li class="nav-item ms-4 me-5">
+                    <a href="index.html" class="text-decoration-none text-light" onclick="load()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-house-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293z" />
+                            <path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293z" />
+                        </svg>
+                    </a>
+                </li>
+
+                <li class="nav-item ms-4">
+                    <a href="perfil.html" class="text-decoration-none text-light" onclick="load()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+                            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                        </svg>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container-fluid" style="padding: 3rem;">
+
+
+        <div class="row">
+            <div class="col-10">
+                <h5>Financeiro</h5>
+            </div>
+            <div class="col-2">
+                <button class="btn-invisibled text-danger" onclick="location.reload()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                        class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z" />
+                        <path
+                            d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="row mt-3 mb-4">
+            <div class="col-8">
+                <select class="form-select me-2" id="mesSelected" onchange="buscaBatePontoDbOnline()">
+                    <option>Selecione o mês</option>
+                    <option value="01">Janeiro</option>
+                    <option value="02">Fevereiro</option>
+                    <option value="03">Março</option>
+                    <option value="04">Abril</option>
+                    <option value="05">Maio</option>
+                    <option value="06">Junho</option>
+                    <option value="07">Julho</option>
+                    <option value="08">Agosto</option>
+                    <option value="09">Setembro</option>
+                    <option value="10">Outubro</option>
+                    <option value="11">Novembro</option>
+                    <option value="12">Dezembro</option>
+                </select>
+            </div>
+            <div class="col-4">
+                <select id="anoSelected" class="form-select" onchange="buscaBatePontoDbOnline()">
+                </select>
+            </div>
+        </div>
+
+        <script>
+            // Obtém o ano atual
+            var anoAtual = new Date().getFullYear();
+
+            // Obtém o elemento select
+            var selectAno = document.getElementById("anoSelected");
+
+            // Gera uma lista de anos a partir do ano atual até 1900
+            for (var ano = anoAtual; ano >= 1900; ano--) {
+                var option = document.createElement("option");
+                option.value = ano;
+                option.text = ano;
+                selectAno.add(option);
+            }
+
+            let currentDate = new Date();
+            let month = String(currentDate.getMonth() + 1).padStart(2, '0');
+
+            document.getElementById('mesSelected').value = month
+        </script>
+
+    </div>
+
+    <div class="text-center" id="avisoConnection" hidden>
+        <span class="text-danger">
+            <svg xmlns="http://www.w3.org/2000/svg" width="55" height="55" fill="currentColor" class="bi bi-wifi-off"
+                viewBox="0 0 16 16">
+                <path
+                    d="M10.706 3.294A12.6 12.6 0 0 0 8 3C5.259 3 2.723 3.882.663 5.379a.485.485 0 0 0-.048.736.52.52 0 0 0 .668.05A11.45 11.45 0 0 1 8 4q.946 0 1.852.148zM8 6c-1.905 0-3.68.56-5.166 1.526a.48.48 0 0 0-.063.745.525.525 0 0 0 .652.065 8.45 8.45 0 0 1 3.51-1.27zm2.596 1.404.785-.785q.947.362 1.785.907a.482.482 0 0 1 .063.745.525.525 0 0 1-.652.065 8.5 8.5 0 0 0-1.98-.932zM8 10l.933-.933a6.5 6.5 0 0 1 2.013.637c.285.145.326.524.1.75l-.015.015a.53.53 0 0 1-.611.09A5.5 5.5 0 0 0 8 10m4.905-4.905.747-.747q.886.451 1.685 1.03a.485.485 0 0 1 .047.737.52.52 0 0 1-.668.05 11.5 11.5 0 0 0-1.811-1.07M9.02 11.78c.238.14.236.464.04.66l-.707.706a.5.5 0 0 1-.707 0l-.707-.707c-.195-.195-.197-.518.04-.66A2 2 0 0 1 8 11.5c.374 0 .723.102 1.021.28zm4.355-9.905a.53.53 0 0 1 .75.75l-10.75 10.75a.53.53 0 0 1-.75-.75z" />
+            </svg>
+        </span>
+    </div>
+
+
+    <div class="table-responsive ms-4" id="tableFinanceiro" hidden>
+        <table class="table table-bordered mt-2 text-center table-striped tabelScroll" style="border: 1px solid rgba(0, 0, 0, 0.274); overflow-x: auto; display: block; white-space: nowrap;">
+            <thead>
+                <tr>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Local</th>
+                    <th scope="col">Área</th>
+                    <th scope="col">Projeto</th>
+                    <th scope="col">Data</th>
+                    <th scope="col">Semana</th>
+                    <th scope="col">Entrada</th>
+                    <th scope="col">Saída</th>
+                    <th scope="col">Intervalo</th>
+                    <th scope="col">Horas</th>
+                    <th scope="col">Horas Extras</th>
+                    <th scope="col" style="width: 6rem;">Diaria</th>
+                    <th scope="col">Transporte</th>
+                    <th scope="col" style="width: 8rem;">TOTAL</th>
+                </tr>
+            </thead>
+            <tbody id="body">
+
+            </tbody>
+        </table>
+
+        <div class="text-center w-100" id="sppiner">
+            <div class="text-center text-danger w-100" id="load">
+                <img src="./assets/img/icons8-robotic-arm.gif" alt="">
+            </div>
+        </div>
+
+    </div>
+
+    <div class="text-center" id="avisoBatePonto">
+
+    </div>
+
+
+    <div class="container">
+        <div id="fechamentoElement" hidden>
+            <table class="table table-bordered border-secondary" style="width: 100%; border: 1px solid black;">
+                <thead>
+                    <div class="text-center mt-2" style="border: 1px solid black; background-color: rgb(250, 250, 250); width: 100%;">
+                        <h5 class="text-dark">FECHAMENTO</h5>
+                    </div>
+                </thead>
+                <tbody id="bodyfechamento">
+                    <tr>
+                        <td style="width: 12rem;">Valor Carteira:</td>
+                        <td id="valor_carteira" class="text-center" style="font-size: 18px;"> </td>
+                    </tr>
+                    <tr>
+                        <td>FGTS:</td>
+                        <td id="fgts" class="text-center" style="font-size: 18px;"> </td>
+                    </tr>
+                    <tr>
+                        <td>INSS:</td>
+                        <td id="inss" class="text-center" style="font-size: 18px;"> </td>
+                    </tr>
+                    <tr>
+                        <td>I.R.R.F:</td>
+                        <td id="irrf" class="text-center" style="font-size: 18px;"> </td>
+                    </tr>
+                    <tr>
+                        <td>Convenio:</td>
+                        <td id="convenio" class="text-center" style="font-size: 18px;"> </td>
+                    </tr>
+                    <tr>
+                        <td>Outros descontos:</td>
+                        <td id="outros_descontos" class="text-center" style="font-size: 18px;"> </td>
+                    </tr>
+                    <tr>
+                        <td>Adiantamento:</td>
+                        <td id="adiantamento" class="text-center" style="font-size: 18px;"> </td>
+                    </tr>
+                    <tr>
+                        <td>Valor NF:</td>
+                        <td id="valor_nf" class="text-center" style="font-size: 18px;"> </td>
+                    </tr>
+                    <tr style="font-size: 20px;">
+                        <td style="background-color: #FFFE01;">
+                            <h6>Total a receber:</h6>
+                        </td>
+                        <td style="background-color: #FFFE01;" class="text-center" id="total_receber_desconto">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+    <br><br>
+
+    <div class="container" id="footer">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-5 my-4 border-top">
+            <p class="col-md-4 mb-0 text-body-secondary">© 2024 Cyber Robotics</p>
+        </footer>
+    </div>
+
+    </div>
+</body>
+
+
+<script src="assets/js/financeiro.js"></script>
+<script src="assets/js/bootstrap.js"></script>
+
+<script src="assets/js/winAviso.js"></script>
+
+</html>

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PontoTech</title>
+    <script src="sql-wasm.js"></script>
+
+    <script src="db/sql.js"></script>
+
+    <script src="services/login.js"></script>
+
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
+    <link rel="stylesheet" href="assets/css/utility.css">
+
+    <!-- Custom styles for this template -->
+    <link href="assets/css/login.css" rel="stylesheet">
+
+    <style>
+        .olho {
+            left: 90%;
+            top: 1.3rem;
+            position: absolute;
+            background-image: url('assets/img/eyebloc.png');
+            background-position: center;
+            background-size: cover;
+            width: 18px;
+            height: 18px;
+        }
+        
+        a {
+            color: #9c330d;
+        }
+    </style>
+</head>
+
+<body class="text-center">
+
+
+
+    <main class="form-signin w-100 m-auto">
+        <img src="assets/img/cyber_logo.png" alt="" width="260px" height="70px" class="mb-5">
+
+        <div class="form-floating">
+            <input type="text" class="form-control nome_usuario" id="login" name="login" placeholder="Digite seu Login" value="" oninput="formatTxt('login', 1)" required>
+            <label for="login">Login</label>
+            <div class="invalid-feedback">
+                Por favor informe o seu Login.
+            </div>
+        </div>
+        <div class="form-floating">
+            <input type="password" class="form-control senha_conta mb-2" id="pass" name="senha" placeholder="Digite a sua senha" oninput="formatTxt('pass', 1)" required>
+            <label for="pass">Senha da conta</label>
+            <div class="olho" id="olho" onclick="passInput()"></div>
+            <div class="invalid-feedback">
+                Por favor informe sua senha da conta.
+            </div>
+        </div>
+
+        <br>
+        <button class="w-100 btn btn-lg btn-danger" id="enterBtn" onclick="validationLogin()">Entrar</button>
+
+        <hr>
+
+        <a href="https://cyberrobotics.com.br/pontotech" class="btn btn-lg btn-light mt-3 small">Entrar como ADM</a>
+
+        <footer class="my-5 pt-5 text-body-secondary text-center text-small">
+            <p class="mb-1">© 2023 Cyber Robotics.</p>
+        </footer>
+    </main>
+
+    <script>
+        //sistema para ver a senha
+        function passInput() {
+            let input = document.getElementById('pass')
+            let img = document.getElementById('olho')
+            if (input.type == 'text') {
+                input.type = 'password'
+                img.style.backgroundImage = "url('assets/img/eyebloc.png')"
+            } else {
+                input.type = 'text'
+                img.style.backgroundImage = "url('assets/img/eye.png')"
+            }
+        }
+
+
+        function formatTxt(id, type) {
+            let inputValue = document.getElementById(id).value;
+
+            if (type == 1) {
+                inputValue = inputValue.replace(/['"\\]+/g, '');
+            } else if (type == 2) {
+                inputValue = inputValue.replace(/[^a-zA-Z_0-9 ]/g, '');
+            } else if (type == 3) {
+                inputValue = inputValue.replace(/[^0-9./-]/g, '');
+            } else if (type == 4) {
+                inputValue = inputValue.replace(/[^0-9-]/g, '');
+            } else if (type == 5) {
+                inputValue = inputValue.replace(/[^0-9]/g, '');
+            } else {
+                inputValue = inputValue.replace(/[^a-zA-Z_0-9]/g, '');
+            }
+
+            document.getElementById(id).value = inputValue
+        }
+    </script>
+
+
+</body>
+<script src="assets/js/bootstrap.js"></script>
+
+</html>

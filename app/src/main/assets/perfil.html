@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PontoTech</title>
+    <script src="sql-wasm.js"></script>
+
+    <script src="assets/js/connection.js"></script>
+
+    <script src="db/sql.js"></script>
+
+    <script src="services/login.js"></script>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
+    <!-- AJAX E JQUERY -->
+    <script src="assets/js/jquery.js"></script>
+
+    <style>
+        /* Esconde o input */
+        
+        input[type='file'] {
+            display: none
+        }
+        /* Aparência que terá o seletor de arquivo */
+        
+        #labelImage {
+            margin: 10px;
+            padding: 6px 20px
+        }
+        
+        .listBorder {
+            border: 1px solid rgba(9, 9, 9, 0.156);
+            background-color: rgba(255, 255, 255, 0.423);
+            padding: 6px;
+        }
+        
+        .listInfo {
+            border-radius: 10px;
+        }
+        
+        .btn-invisibled {
+            border: 0;
+            background-color: rgba(240, 248, 255, 0);
+        }
+        
+        .perfil {
+            border-radius: 10rem;
+        }
+        
+        .img {
+            border: 0;
+            background-color: rgba(240, 248, 255, 0)
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="aviso_tel" class="avisoTel" hidden>
+        <h3>
+            Por favor, Utilize um SmartPhone!
+        </h3>
+    </div>
+
+    <div class="loading">
+        <div class="spinner-border text-danger" id="load" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <nav style="position: fixed; bottom: 0; width: 100%; z-index: 1;" id="nav" hidden>
+        <div class="text-center" style="background-color: #E64F1C; display: flex; justify-content: center;">
+            <ul class="nav nav-pills" style="padding: 10px;">
+                <li class="nav-item me-5">
+                    <a href="financeiro.html" class="text-decoration-none text-light" onclick="load()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-piggy-bank-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M7.964 1.527c-2.977 0-5.571 1.704-6.32 4.125h-.55A1 1 0 0 0 .11 6.824l.254 1.46a1.5 1.5 0 0 0 1.478 1.243h.263c.3.513.688.978 1.145 1.382l-.729 2.477a.5.5 0 0 0 .48.641h2a.5.5 0 0 0 .471-.332l.482-1.351c.635.173 1.31.267 2.011.267.707 0 1.388-.095 2.028-.272l.543 1.372a.5.5 0 0 0 .465.316h2a.5.5 0 0 0 .478-.645l-.761-2.506C13.81 9.895 14.5 8.559 14.5 7.069q0-.218-.02-.431c.261-.11.508-.266.705-.444.315.306.815.306.815-.417 0 .223-.5.223-.461-.026a1 1 0 0 0 .09-.255.7.7 0 0 0-.202-.645.58.58 0 0 0-.707-.098.74.74 0 0 0-.375.562c-.024.243.082.48.32.654a2 2 0 0 1-.259.153c-.534-2.664-3.284-4.595-6.442-4.595m7.173 3.876a.6.6 0 0 1-.098.21l-.044-.025c-.146-.09-.157-.175-.152-.223a.24.24 0 0 1 .117-.173c.049-.027.08-.021.113.012a.2.2 0 0 1 .064.199m-8.999-.65a.5.5 0 1 1-.276-.96A7.6 7.6 0 0 1 7.964 3.5c.763 0 1.497.11 2.18.315a.5.5 0 1 1-.287.958A6.6 6.6 0 0 0 7.964 4.5c-.64 0-1.255.09-1.826.254ZM5 6.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0" />
+                        </svg>
+                    </a>
+                </li>
+
+                <li class="nav-item ms-4 me-5">
+                    <a href="index.html" class="text-decoration-none text-light" onclick="load()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-house-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293z" />
+                            <path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293z" />
+                        </svg>
+                    </a>
+                </li>
+
+                <li class="nav-item ms-4">
+                    <a href="perfil.html" class="text-decoration-none text-light" onclick="load()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+                            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                        </svg>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container-fluid" style="padding: 3rem;">
+
+        <div class="text-center">
+            <button class="img" id="imgOnline" data-bs-toggle="modal" data-bs-target="#modalPerfil" hidden>
+                <svg xmlns="http://www.w3.org/2000/svg" width="95" height="95" fill="currentColor"
+                    class="bi bi-person-circle me-3" viewBox="0 0 16 16">
+                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                    <path fill-rule="evenodd"
+                        d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                </svg>
+            </button>
+            <button class="img" id="imgOffline" data-bs-toggle="modal" data-bs-target="#modalPerfil">
+                <svg xmlns="http://www.w3.org/2000/svg" width="95" height="95" fill="currentColor"
+                    class="bi bi-person-circle me-3" viewBox="0 0 16 16">
+                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                    <path fill-rule="evenodd"
+                        d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                </svg>
+            </button>
+
+            <h5 class="mt-2" id="nome_sobrenome"></h5>
+
+            <h6 id="funcao"></h6>
+
+            <p class="text-success mb-0 mt-3 small">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-telephone-fill" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877z" />
+                </svg> <span id="telefone"></span>
+            </p>
+            <p class="text-danger mt-4">
+                Local:
+                <span id="valor_hora"></span>
+            </p>
+            <p class="text-danger mt-2">
+                Viagem:
+                <span id="valor_viagem"></span>
+            </p>
+
+        </div>
+
+        <div class="card mt-5 position-relative">
+            <div class="position-absolute" style="left: 0; top: 0; z-index: 1; display: flex; justify-content: center; align-items: center; text-align: center; width: 100%; height: 100%; background-color: rgba(120, 120, 120, 0.332);" id="avisoConnection" hidden>
+                <span class="text-danger">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="55" height="55" fill="currentColor"
+                        class="bi bi-wifi-off" viewBox="0 0 16 16">
+                        <path
+                            d="M10.706 3.294A12.6 12.6 0 0 0 8 3C5.259 3 2.723 3.882.663 5.379a.485.485 0 0 0-.048.736.52.52 0 0 0 .668.05A11.45 11.45 0 0 1 8 4q.946 0 1.852.148zM8 6c-1.905 0-3.68.56-5.166 1.526a.48.48 0 0 0-.063.745.525.525 0 0 0 .652.065 8.45 8.45 0 0 1 3.51-1.27zm2.596 1.404.785-.785q.947.362 1.785.907a.482.482 0 0 1 .063.745.525.525 0 0 1-.652.065 8.5 8.5 0 0 0-1.98-.932zM8 10l.933-.933a6.5 6.5 0 0 1 2.013.637c.285.145.326.524.1.75l-.015.015a.53.53 0 0 1-.611.09A5.5 5.5 0 0 0 8 10m4.905-4.905.747-.747q.886.451 1.685 1.03a.485.485 0 0 1 .047.737.52.52 0 0 1-.668.05 11.5 11.5 0 0 0-1.811-1.07M9.02 11.78c.238.14.236.464.04.66l-.707.706a.5.5 0 0 1-.707 0l-.707-.707c-.195-.195-.197-.518.04-.66A2 2 0 0 1 8 11.5c.374 0 .723.102 1.021.28zm4.355-9.905a.53.53 0 0 1 .75.75l-10.75 10.75a.53.53 0 0 1-.75-.75z" />
+                    </svg>
+                </span>
+            </div>
+
+            <div class="card-body">
+                <h6>Informações de acesso</h6>
+                <div class="mt-4">
+                    <strong>Login:</strong> <br> <span id="login"></span>
+                </div>
+                <div class="mt-3">
+                    <strong>Senha:</strong>
+                    <div class="input-group mt-2">
+                        <input type="password" value="" id="inputPass" class="form-control" disabled>
+                        <span class="input-group-text" id="spanPass" onclick="viewPass()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-eye-slash" viewBox="0 0 16 16">
+                                <path
+                                    d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7 7 0 0 0-2.79.588l.77.771A6 6 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755q-.247.248-.517.486z" />
+                                <path
+                                    d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829" />
+                                <path
+                                    d="M3.35 5.47q-.27.24-.518.487A13 13 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7 7 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12z" />
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="text-center mt-5">
+            <a onclick="exit()" class="text-danger text-decoration-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-power" viewBox="0 0 16 16">
+                    <path d="M7.5 1v7h1V1z" />
+                    <path
+                        d="M3 8.812a5 5 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812" />
+                </svg>
+            </a>
+        </div>
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalPerfil" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header border-bottom-0">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Imagem de perfil</h1>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="125" height="125" fill="currentColor" class="bi bi-person-circle me-3" viewBox="0 0 16 16">
+                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                                <path fill-rule="evenodd"
+                                    d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                            </svg>
+
+                            <label for='imagem-usuario' id="labelImage" class="btn btn-invisibled text-dark" style="position: absolute; right: 4rem; bottom: 0rem;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                    class="bi bi-camera-fill" viewBox="0 0 16 16">
+                                    <path d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
+                                    <path
+                                        d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4zm.5 2a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1m9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0" />
+                                </svg>
+                            </label>
+
+                            <input type="file" id="imagem-usuario" onchange="converterImagem();" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top-0">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function viewPass() {
+                let inputPass = document.getElementById('inputPass')
+
+                if (inputPass.type == 'password') {
+                    inputPass.type = 'text'
+                    document.getElementById('spanPass').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+  <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+  <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+</svg>`
+                } else {
+                    inputPass.type = 'password'
+                    document.getElementById('spanPass').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-slash" viewBox="0 0 16 16">
+                    <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7 7 0 0 0-2.79.588l.77.771A6 6 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755q-.247.248-.517.486z"/>
+                    <path d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829"/>
+                    <path d="M3.35 5.47q-.27.24-.518.487A13 13 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7 7 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12z"/>
+                  </svg>`
+                }
+            }
+        </script>
+
+
+    </div>
+
+    <br><br>
+
+    <div class="container" id="footer">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-5 my-4 border-top">
+            <p class="col-md-4 mb-0 text-body-secondary">© 2024 Cyber Robotics</p>
+        </footer>
+    </div>
+
+    </div>
+</body>
+
+<script>
+    isOnline().then((online) => {
+        if (online) {
+            getUsers().then(data => {
+                let user = JSON.parse(data)
+
+                buscaImgDbOnline(user[0].values[0][1])
+
+            }).catch(erro => {
+                console.error(erro);
+            })
+        } else {
+            document.getElementById('imgOffline').hidden = false
+            document.getElementById('imgOnline').hidden = true
+        }
+    });
+
+
+    function converterImagem() {
+        var receberArquivo = document.querySelector("#imagem-usuario").files;
+
+        // Verificar se existe o arquivo
+        if (receberArquivo.length > 0) {
+
+            var carregarImagem = receberArquivo[0];
+
+            var lerArquivo = new FileReader();
+
+            lerArquivo.onload = function(arquivoCarregado) {
+                var imagemBase64 = arquivoCarregado.target.result;
+
+                getUsers().then(data => {
+                    let user = JSON.parse(data)
+
+                    insertDbImageUser(imagemBase64, user[0].values[0][1])
+
+                }).catch(erro => {
+                    console.error(erro);
+                })
+            }
+
+            lerArquivo.readAsDataURL(carregarImagem);
+        }
+    }
+
+    getUsers().then(data => {
+        let user = JSON.parse(data)
+
+        document.getElementById('nome_sobrenome').innerHTML = user[0].values[0][2] + ' ' + user[0].values[0][6]
+        document.getElementById('funcao').innerHTML = user[0].values[0][4]
+        document.getElementById('telefone').innerHTML = (user[0].values[0][7] == '' ? 'Não informado' : user[0].values[0][7])
+        document.getElementById('valor_hora').innerHTML = user[0].values[0][8].toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        })
+        document.getElementById('valor_viagem').innerHTML = user[0].values[0][9].toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        })
+
+        isOnline().then((online) => {
+            if (online) {
+                getInfoUserDbOnline(user[0].values[0][1]);
+            } else {
+                document.getElementById('avisoConnection').hidden = false
+            }
+        });
+
+    }).catch(erro => {
+        console.error(erro);
+    })
+
+    function exit() {
+        deleteAllProjetos()
+        deleteAllClientes()
+        deleteAllBatePonto()
+        deleteAllRegistros()
+
+        deleteAllUser()
+        location.href = 'login.html'
+    }
+
+    async function getInfoUserDbOnline(id_colaborador) {
+        try {
+            const apiUrl = 'https://cyberrobotics.com.br/pontotech_api/getUser/';
+
+            const params = new URLSearchParams({
+                id_colaborador: id_colaborador
+            }).toString();
+
+            const response = await fetch(`${apiUrl}?${params}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Erro na requisição: ' + response.statusText);
+            }
+
+            const data = await response.json();
+
+            if (data.status !== 'erro') {
+                document.getElementById('login').innerHTML = data.login
+                document.getElementById('inputPass').value = data.senha
+            } else {
+                console.log('Erro na resposta da API:', data);
+            }
+        } catch (error) {
+            console.error('Erro:', error);
+        }
+    }
+
+    async function insertDbImageUser(imagem, id_colaborador) {
+        const apiUrl = 'https://cyberrobotics.com.br/pontotech_api/saveImage/';
+
+        const data = {
+            id_colaborador: id_colaborador,
+            imagem: imagem
+        };
+
+        fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro na requisição: ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status != 'erro') {
+
+                    location.reload()
+
+                } else {
+                    console.log(data);
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+            });
+    }
+
+    async function buscaImgDbOnline(id_colaborador) {
+        try {
+            const apiUrl = 'https://cyberrobotics.com.br/pontotech_api/getImagePerfil/';
+
+            const params = new URLSearchParams({
+                id_colaborador: id_colaborador
+            }).toString();
+
+            const response = await fetch(`${apiUrl}?${params}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Erro na requisição: ' + response.statusText);
+            }
+
+            const data = await response.json();
+
+            if (data.status !== 'erro') {
+                document.getElementById('imgOnline').innerHTML = `<img src="${data.img}" class="perfil" alt="" width="115" height="115">`
+
+                document.getElementById('imgOffline').hidden = true
+                document.getElementById('imgOnline').hidden = false
+            }
+        } catch (error) {
+            console.error('Erro:', error);
+        }
+    }
+</script>
+
+
+<script src="assets/js/bootstrap.js"></script>
+
+<script src="assets/js/winAviso.js"></script>
+
+</html>
