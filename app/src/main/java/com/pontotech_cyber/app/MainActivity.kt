@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     private var uploadMessages: ValueCallback<Array<Uri>>? = null
     private val FILE_CHOOSER_RESULT_CODE = 1
 
-    private var CURRENT_VERSION: String = "2.1"
+    private var CURRENT_VERSION: String = "2.2"
     private val VERSION_CHECK_URL = "https://cyberrobotics.com.br/download-pontotech/apk/version.json"
 
     companion object {
