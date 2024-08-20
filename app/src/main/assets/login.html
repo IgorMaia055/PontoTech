@@ -10,6 +10,10 @@
 
     <script src="db/sql.js"></script>
 
+    <script src="assets/js/connection.js"></script>
+
+    <script src="services/log.js"></script>
+
     <script src="services/login.js"></script>
 
     <link rel="stylesheet" href="assets/css/bootstrap.css">
@@ -29,7 +33,7 @@
             width: 18px;
             height: 18px;
         }
-        
+
         a {
             color: #9c330d;
         }
@@ -44,14 +48,16 @@
         <img src="assets/img/cyber_logo.png" alt="" width="260px" height="70px" class="mb-5">
 
         <div class="form-floating">
-            <input type="text" class="form-control nome_usuario" id="login" name="login" placeholder="Digite seu Login" value="" oninput="formatTxt('login', 1)" required>
+            <input type="text" class="form-control nome_usuario" id="login" name="login" placeholder="Digite seu Login"
+                value="" oninput="formatTxt('login', 1)" required>
             <label for="login">Login</label>
             <div class="invalid-feedback">
                 Por favor informe o seu Login.
             </div>
         </div>
         <div class="form-floating">
-            <input type="password" class="form-control senha_conta mb-2" id="pass" name="senha" placeholder="Digite a sua senha" oninput="formatTxt('pass', 1)" required>
+            <input type="password" class="form-control senha_conta mb-2" id="pass" name="senha"
+                placeholder="Digite a sua senha" oninput="formatTxt('pass', 1)" required>
             <label for="pass">Senha da conta</label>
             <div class="olho" id="olho" onclick="passInput()"></div>
             <div class="invalid-feedback">
@@ -64,7 +70,8 @@
 
         <hr>
 
-        <a href="https://cyberrobotics.com.br/pontotech" class="btn btn-lg btn-light mt-3 small">Entrar como ADM</a>
+        <a href="https://cyberrobotics.com.br/pontotech" target="_blank"
+            class="btn btn-lg btn-light mt-3 small">Pontotech Online</a>
 
         <footer class="my-5 pt-5 text-body-secondary text-center text-small">
             <p class="mb-1">© 2023 Cyber Robotics.</p>

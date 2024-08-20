@@ -1,8 +1,9 @@
 async function createBatePonto() {
     try {
 
+        document.getElementById('btnCancelBatePonto').disabled = true
         document.getElementById('btnCriar').disabled = true
-        document.getElementById('btnCriar').innerHTML = `<div class="spinner-border text-danger" role="status">
+        document.getElementById('btnCriar').innerHTML = `<div class="spinner-border text-light" role="status">
   <span class="visually-hidden">Loading...</span>
 </div>`
 
@@ -21,86 +22,27 @@ async function createBatePonto() {
         let date = `${year}-${month}-${day}`;
         let unic_id = generateUniqueId();
 
+        log('tentando inserir o batePonto local')
+
         setBatePonto(id_colaborador, id_projeto, tipo, date, month, year, null, null, null, '', unic_id, 0).then(() => {
-            console.log("Inserção do BatePonto concluída");
 
-            isOnline().then((online) => {
-                if (online) {
-                    // Conectado
-                    let dados = {
-                        id_colaborador: id_colaborador,
-                        id_projeto: id_projeto,
-                        tipo: tipo,
-                        date: date,
-                        mes: month,
-                        ano: year,
-                        id_unic: unic_id
-                    };
-
-                    setBatePontoSistem(dados).then(() => {
-                        updateBatePontoUpload(unic_id, 1).then(() => {
-                            console.log("UPLOAD FEITO");
-                            location.reload()
-                        }).catch(error => {
-                            console.error(error);
-                        })
-                    }).catch(error => {
-                        console.error(error);
-                    })
-                } else {
-                    location.reload();
-                }
-            });
+            executarSincronizacaoERecargaBatePonto()
 
         }).catch(erro => {
+            log('Erro ao tentar inserir')
+            alert('Algo deu errado! tente novamente.')
+            console.log('erro')
             console.error(erro);
+
+            location.reload()
         })
     } catch (erro) {
+        log('Erro ao tentar inserir')
+        alert('Algo deu errado! tente novamente.')
+        console.log('erro')
         console.error(erro);
-    }
-}
 
-async function setBatePontoSistem(dados) {
-    try {
-        // URL da API para onde a requisição será enviada
-        const apiUrl = 'https://cyberrobotics.com.br/pontotech_api/insertBatePonto/';
-
-        // Dados a serem enviados
-        const data = {
-            id_colaborador: dados.id_colaborador,
-            date: dados.date,
-            id_projeto: dados.id_projeto,
-            mes: dados.mes,
-            tipo: dados.tipo,
-            ano: dados.ano,
-            id_unic: dados.id_unic
-        };
-
-        // Envio da requisição POST
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
-
-        // Verificação da resposta da API
-        if (!response.ok) {
-            throw new Error('Erro na requisição: ' + response.statusText);
-        }
-
-        // Conversão da resposta para JSON
-        const responseData = await response.json();
-
-        if (responseData.status != 'erro') {
-
-            console.log(responseData)
-                // location.reload()
-        }
-    } catch (error) {
-        // Tratamento de erros
-        console.error('Erro:', error);
+        location.reload()
     }
 }
 
@@ -109,4 +51,23 @@ function generateUniqueId() {
     let random = Math.floor(Math.random() * 10000);
 
     return `${timestamp}-${random}`;
+}
+
+async function executarSincronizacaoERecargaBatePonto() {
+    try {
+        clearInterval(interval)
+
+        await conferirConnectionSincronizar(false);
+
+        document.getElementById('btnCriar').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+  <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+</svg>`
+
+        setTimeout(() => {
+            location.reload()
+        }, 500);
+
+    } catch (error) {
+        console.log('Erro durante a sincronização:', error);
+    }
 }

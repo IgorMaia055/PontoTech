@@ -12,16 +12,72 @@
 
     <script src="db/sql.js"></script>
 
+    <script src="services/log.js"></script>
+
+    <script src="services/saveLocalBatePonto.js"></script>
+
     <script src="services/login.js"></script>
     <script src="services/projetos.js"></script>
     <script src="services/clientes.js"></script>
 
     <script src="services/sincronizar.js"></script>
 
+    <script src="services/validationRegisters.js"></script>
+
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
     <!-- AJAX E JQUERY -->
     <script src="assets/js/jquery.js"></script>
+
+    <style>
+        #tipo {
+            min-height: 48px;
+            /* Garante a altura mínima recomendada */
+            padding: 10px;
+            /* Adiciona padding interno para melhorar a área de toque */
+            font-size: 16px;
+            /* Opcional: ajusta o tamanho da fonte para usabilidade */
+        }
+
+        #btnPlusRegister {
+            min-height: 48px;
+            padding-top: 4.5px;
+            padding-bottom: 4.5px;
+            display: inline-block;
+        }
+
+        #btnCriar {
+            min-height: 48px;
+            padding-top: 4.5px;
+            padding-bottom: 4.5px;
+            display: inline-block;
+        }
+
+        #btnCancelBatePonto {
+            min-height: 48px;
+            padding-top: 4.5px;
+            padding-bottom: 4.5px;
+            display: inline-block;
+        }
+
+
+        @keyframes destruirAnimacao {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.1) rotate(15deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(0) rotate(45deg);
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -55,7 +111,8 @@
             <ul class="nav nav-pills" style="padding: 10px;">
                 <li class="nav-item me-5">
                     <a href="financeiro.html" class="text-decoration-none text-light" onclick="load()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-piggy-bank-fill" viewBox="0 0 16 16">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                            class="bi bi-piggy-bank-fill" viewBox="0 0 16 16">
                             <path
                                 d="M7.964 1.527c-2.977 0-5.571 1.704-6.32 4.125h-.55A1 1 0 0 0 .11 6.824l.254 1.46a1.5 1.5 0 0 0 1.478 1.243h.263c.3.513.688.978 1.145 1.382l-.729 2.477a.5.5 0 0 0 .48.641h2a.5.5 0 0 0 .471-.332l.482-1.351c.635.173 1.31.267 2.011.267.707 0 1.388-.095 2.028-.272l.543 1.372a.5.5 0 0 0 .465.316h2a.5.5 0 0 0 .478-.645l-.761-2.506C13.81 9.895 14.5 8.559 14.5 7.069q0-.218-.02-.431c.261-.11.508-.266.705-.444.315.306.815.306.815-.417 0 .223-.5.223-.461-.026a1 1 0 0 0 .09-.255.7.7 0 0 0-.202-.645.58.58 0 0 0-.707-.098.74.74 0 0 0-.375.562c-.024.243.082.48.32.654a2 2 0 0 1-.259.153c-.534-2.664-3.284-4.595-6.442-4.595m7.173 3.876a.6.6 0 0 1-.098.21l-.044-.025c-.146-.09-.157-.175-.152-.223a.24.24 0 0 1 .117-.173c.049-.027.08-.021.113.012a.2.2 0 0 1 .064.199m-8.999-.65a.5.5 0 1 1-.276-.96A7.6 7.6 0 0 1 7.964 3.5c.763 0 1.497.11 2.18.315a.5.5 0 1 1-.287.958A6.6 6.6 0 0 0 7.964 4.5c-.64 0-1.255.09-1.826.254ZM5 6.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0" />
                         </svg>
@@ -64,7 +121,8 @@
 
                 <li class="nav-item ms-4 me-5">
                     <a href="index.html" class="text-decoration-none text-light" onclick="load()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-house-fill" viewBox="0 0 16 16">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                            class="bi bi-house-fill" viewBox="0 0 16 16">
                             <path
                                 d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293z" />
                             <path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293z" />
@@ -74,7 +132,8 @@
 
                 <li class="nav-item ms-4">
                     <a href="perfil.html" class="text-decoration-none text-light" onclick="load()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                            class="bi bi-person-fill" viewBox="0 0 16 16">
                             <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
                         </svg>
                     </a>
@@ -86,13 +145,34 @@
     <div class="container-fluid" style="padding: 3rem;">
 
         <div class="row mb-3">
-            <div class="col-10">
-                <h5 class="fw-bold">Registros</h5>
+            <div class="col-7">
+                <h5 class="fw-bold mt-3">Registros</h5>
             </div>
 
             <div class="col-2">
-                <button class="btn-invisibled text-danger" data-bs-toggle="modal" data-bs-target="#createBatePonto">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor"
+                <button class="btn-invisibled text-danger mt-3" id="reloadBtn" onclick="reloadPage()"
+                    style="transition: transform 0.5s ease;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                        class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z" />
+                        <path
+                            d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466" />
+                    </svg>
+                </button>
+            </div>
+
+            <script>
+                function reloadPage() {
+                    document.getElementById('reloadBtn').style.transform = 'rotate(90deg)';
+                    location.reload()
+                }
+            </script>
+
+            <div class="col-3">
+
+                <button class="btn-invisibled text-danger" data-bs-toggle="modal" id="btnPlusRegister"
+                    data-bs-target="#createBatePonto">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width: 3rem; height: 3rem;" fill="currentColor"
                         class="bi bi-plus-circle-dotted" viewBox="0 0 16 16">
                         <path
                             d="M8 0q-.264 0-.523.017l.064.998a7 7 0 0 1 .918 0l.064-.998A8 8 0 0 0 8 0M6.44.152q-.52.104-1.012.27l.321.948q.43-.147.884-.237L6.44.153zm4.132.271a8 8 0 0 0-1.011-.27l-.194.98q.453.09.884.237zm1.873.925a8 8 0 0 0-.906-.524l-.443.896q.413.205.793.459zM4.46.824q-.471.233-.905.524l.556.83a7 7 0 0 1 .793-.458zM2.725 1.985q-.394.346-.74.74l.752.66q.303-.345.648-.648zm11.29.74a8 8 0 0 0-.74-.74l-.66.752q.346.303.648.648zm1.161 1.735a8 8 0 0 0-.524-.905l-.83.556q.254.38.458.793l.896-.443zM1.348 3.555q-.292.433-.524.906l.896.443q.205-.413.459-.793zM.423 5.428a8 8 0 0 0-.27 1.011l.98.194q.09-.453.237-.884zM15.848 6.44a8 8 0 0 0-.27-1.012l-.948.321q.147.43.237.884zM.017 7.477a8 8 0 0 0 0 1.046l.998-.064a7 7 0 0 1 0-.918zM16 8a8 8 0 0 0-.017-.523l-.998.064a7 7 0 0 1 0 .918l.998.064A8 8 0 0 0 16 8M.152 9.56q.104.52.27 1.012l.948-.321a7 7 0 0 1-.237-.884l-.98.194zm15.425 1.012q.168-.493.27-1.011l-.98-.194q-.09.453-.237.884zM.824 11.54a8 8 0 0 0 .524.905l.83-.556a7 7 0 0 1-.458-.793zm13.828.905q.292-.434.524-.906l-.896-.443q-.205.413-.459.793zm-12.667.83q.346.394.74.74l.66-.752a7 7 0 0 1-.648-.648zm11.29.74q.394-.346.74-.74l-.752-.66q-.302.346-.648.648zm-1.735 1.161q.471-.233.905-.524l-.556-.83a7 7 0 0 1-.793.458zm-7.985-.524q.434.292.906.524l.443-.896a7 7 0 0 1-.793-.459zm1.873.925q.493.168 1.011.27l.194-.98a7 7 0 0 1-.884-.237zm4.132.271a8 8 0 0 0 1.012-.27l-.321-.948a7 7 0 0 1-.884.237l.194.98zm-2.083.135a8 8 0 0 0 1.046 0l-.064-.998a7 7 0 0 1-.918 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
@@ -140,10 +220,12 @@
                         <option value="viagem">Viagem</option>
                         <option value="atendimento">Atendimento</option>
                         <option value="offline">Offline</option>
+                        <option value="home">Home Office</option>
                     </select>
 
                     <label class="form-label mt-2">Projeto</label>
-                    <div class="dropdown-menu d-block position-static pt-0 mx-0 rounded-3 overflow-hidden w-280px" data-bs-theme="light">
+                    <div class="dropdown-menu d-block position-static pt-0 mx-0 rounded-3 overflow-hidden w-280px"
+                        data-bs-theme="light">
                         <input type="text" id="id_projeto" name="projeto" hidden>
 
                         <ul class="list-unstyled mb-0" id="projectOpts" style="height: 15rem; overflow-y: auto;">
@@ -153,8 +235,10 @@
 
                 </div>
                 <div class="modal-footer border-top-0">
-                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-danger" id="btnCriar" onclick="createBatePonto()" disabled>Criar</button>
+                    <button type="button" class="btn btn-outline-danger" id="btnCancelBatePonto"
+                        data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger" id="btnCriar" onclick="createBatePonto()"
+                        disabled>Criar</button>
                     </form>
                 </div>
             </div>
@@ -163,6 +247,102 @@
 
 </body>
 
+<script>
+    function deleteRegisterAndBatePonto(unic_id, id_bateponto) {
+        console.log(unic_id);
+
+        document.getElementById('btnDeleteBatePonto' + id_bateponto).disabled = true
+        document.getElementById('btnDeleteBatePonto' + id_bateponto).innerHTML = `<div class="spinner-border text-danger" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>`
+        document.getElementById('btnCancelDeleteBatePonto' + id_bateponto).disabled = true
+
+        deleteDbOnlineBatePonto(unic_id, id_bateponto)
+
+        deleteRegistro(id_bateponto)
+
+        deleteBatePonto(id_bateponto)
+    }
+
+    async function deleteDbOnlineBatePonto(unic_id, id_bateponto) {
+        try {
+            const apiUrl = 'https://cyberrobotics.com.br/pontotech_api/deleteDbOnlineBatePonto/';
+
+            const data = {
+                unic_id: unic_id
+            };
+
+            // Verificando se todos os dados necessários estão presentes
+            if (!unic_id) {
+                throw new Error('Dados incompletos: ' + JSON.stringify(dados));
+            }
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error('Erro na requisição: ' + response.statusText + ' - ' + errorText);
+            }
+
+            const responseData = await response.json();
+            console.log(responseData);
+
+            if (responseData.status != 'erro') {
+                log('Deletado com sucesso')
+
+                document.getElementById('btnDeleteBatePonto' + id_bateponto).innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+  <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+</svg>`
+
+                setTimeout(() => {
+                    location.reload();
+                }, 500);
+
+            } else {
+                log('Erro ao tentar deletar o registro no dbOnline')
+                alert('Algo deu errado! Tente novamente.')
+                location.reload();
+            }
+
+        } catch (error) {
+            log('Erro ao tentar deletar o registro no dbOnline')
+            console.error('Erro:', error);
+            alert('Algo deu errado! Tente novamente.')
+            location.reload();
+        }
+    }
+
+
+
+    setInterval(() => {
+        conferirConnection()
+    }, 5000);
+
+    conferirConnection()
+    function conferirConnection() {
+        isOnline().then((online) => {
+            if (online) {
+                let btns = document.querySelectorAll('.btnDeleteBatePontoAndRegisters')
+
+                for (let i = 0; i < btns.length; i++) {
+                    btns[i].disabled = false
+                }
+            } else {
+                let btns = document.querySelectorAll('.btnDeleteBatePontoAndRegisters')
+
+                for (let i = 0; i < btns.length; i++) {
+                    btns[i].disabled = true
+                }
+            }
+        });
+    }
+</script>
 
 <script src="services/listProjetos.js"></script>
 

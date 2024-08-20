@@ -5,6 +5,7 @@ isOnline().then((online) => {
 });
 
 async function getDbOnlineProjetos() {
+    log('Tentando listar os projetos')
     try {
         const apiUrl = 'https://cyberrobotics.com.br/pontotech_api/projetos/';
         const user = await getUsers();
@@ -28,6 +29,8 @@ async function getDbOnlineProjetos() {
         const data = await response.json();
 
         if (data.status !== 'erro') {
+            log('Projetos listados')
+
             const dadosApi = JSON.parse(data.projetos);
 
             await deleteAllProjetos()
@@ -37,9 +40,13 @@ async function getDbOnlineProjetos() {
             }
 
         } else {
-            //console.log('Erro na resposta da API:', data);
+            log('Erro ao listar os projetos')
+            console.log('erro');
         }
     } catch (error) {
-        //console.error('Erro:', error);
+        log('Erro ao listar os projetos')
+
+        console.log('erro');
+
     }
 }

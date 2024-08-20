@@ -1,148 +1,183 @@
-  setTimeout(() => {
-      getBatePonto().then(data => {
-          let batePontos = JSON.parse(data)
+setTimeout(() => {
+    getUsers().then(data => {
 
-          if (batePontos.length > 0) {
-              for (const batePonto of batePontos[0].values) {
+        let user = JSON.parse(data)
 
-                  buscaRegistro(batePonto[0], 'saida').then(data => {
+        if (user.length > 0) {
+
+            getBatePontoDesc(user[0].values[0][1]).then(data => {
+                let batePontos = JSON.parse(data)
+
+                if (batePontos.length > 0) {
+                    for (const batePonto of batePontos[0].values) {
+
+                        buscaRegistro(batePonto[0], 'saida').then(data => {
 
 
-                      let batePontoSaida = JSON.parse(data)
-                      if (!batePontoSaida.length > 0) {
-                          getProjetos().then(dataProjetos => {
-                              let projetos = JSON.parse(dataProjetos)
+                            let batePontoSaida = JSON.parse(data)
+                            if (!batePontoSaida.length > 0) {
+                                getProjetos().then(dataProjetos => {
+                                    let projetos = JSON.parse(dataProjetos)
 
-                              for (const projeto of projetos[0].values) {
-                                  if (projeto[1] == batePonto[2]) {
+                                    for (const projeto of projetos[0].values) {
+                                        if (projeto[1] == batePonto[2]) {
 
-                                      getClientes().then(dataCliente => {
-                                          let clientes = JSON.parse(dataCliente)
+                                            getClientes().then(dataCliente => {
+                                                let clientes = JSON.parse(dataCliente)
 
-                                          for (const cliente of clientes[0].values) {
-                                              if (cliente[1] == projeto[6]) {
+                                                for (const cliente of clientes[0].values) {
+                                                    if (cliente[1] == projeto[6]) {
 
-                                                  getRegistros().then(dataGetRegistros => {
-                                                      let registros = JSON.parse(dataGetRegistros)
+                                                        getRegistros().then(dataGetRegistros => {
+                                                            let registros = JSON.parse(dataGetRegistros)
 
-                                                      console.log(registros.length)
-                                                      if (registros.length > 0) {
-                                                          let entrada = '--:--'
-                                                          let intervalo = '--:--'
-                                                          let retorno = '--:--'
-                                                          let saida = '--:--'
+                                                            console.log(registros.length)
+                                                            if (registros.length > 0) {
+                                                                let entrada = '--:--'
+                                                                let intervalo = '--:--'
+                                                                let retorno = '--:--'
+                                                                let saida = '--:--'
 
-                                                          let selectOpt
+                                                                let selectOpt
 
-                                                          for (const registro of registros[0].values) {
-                                                              if (registro[1] == batePonto[0]) {
-                                                                  if (registro[2] == 'entrada') {
-                                                                      entrada = (registro[3])
+                                                                for (const registro of registros[0].values) {
+                                                                    if (registro[1] == batePonto[0]) {
+                                                                        if (registro[2] == 'entrada') {
+                                                                            entrada = (registro[3])
 
-                                                                      selectOpt = ` <select id="selectPeriodo${batePonto[0]}" class="form-select border-4">
+                                                                            selectOpt = ` <select id="selectPeriodo${batePonto[0]}" class="form-select border-4">
                                                                     <option value="entrada" disabled>Entrada</option>
                                                                     <option value="intervalo">Intervalo</option>
                                                                     <option value="retorno" disabled>Retorno</option>
                                                                     <option value="saida">Saída</option>
                                                                 </select>`
-                                                                  }
-                                                                  if (registro[2] == 'intervalo') {
-                                                                      intervalo = (registro[3])
+                                                                        }
+                                                                        if (registro[2] == 'intervalo') {
+                                                                            intervalo = (registro[3])
 
-                                                                      selectOpt = ` <select id="selectPeriodo${batePonto[0]}" class="form-select border-4">
+                                                                            selectOpt = ` <select id="selectPeriodo${batePonto[0]}" class="form-select border-4">
                                                                     <option value="entrada" disabled>Entrada</option>
                                                                     <option value="intervalo" disabled>Intervalo</option>
                                                                     <option value="retorno">Retorno</option>
                                                                     <option value="saida" disabled>Saída</option>
                                                                 </select>`
-                                                                  }
-                                                                  if (registro[2] == 'retorno') {
-                                                                      retorno = (registro[3])
+                                                                        }
+                                                                        if (registro[2] == 'retorno') {
+                                                                            retorno = (registro[3])
 
-                                                                      selectOpt = ` <select id="selectPeriodo${batePonto[0]}" class="form-select border-4">
+                                                                            selectOpt = ` <select id="selectPeriodo${batePonto[0]}" class="form-select border-4">
                                                                     <option value="entrada" disabled>Entrada</option>
                                                                     <option value="intervalo" disabled>Intervalo</option>
                                                                     <option value="retorno" disabled>Retorno</option>
                                                                     <option value="saida">Saída</option>
                                                                 </select>`
-                                                                  }
-                                                                  if (registro[2] == 'saida') {
-                                                                      saida = (registro[3])
-                                                                  }
-                                                              }
-                                                          }
+                                                                        }
+                                                                        if (registro[2] == 'saida') {
+                                                                            saida = (registro[3])
+                                                                        }
+                                                                    }
+                                                                }
 
-                                                          insertDomElments(batePonto, projeto, cliente, entrada, intervalo, retorno, saida, selectOpt)
-                                                          document.getElementById('spinner').hidden = true
-                                                      } else {
-                                                          let str = `<select id="selectPeriodo${batePonto[0]}" class="form-select border-4">
+                                                                insertDomElments(batePonto, projeto, cliente, entrada, intervalo, retorno, saida, selectOpt)
+                                                                document.getElementById('spinner').hidden = true
+                                                            } else {
+                                                                let str = `<select id="selectPeriodo${batePonto[0]}" class="form-select border-4">
                                                                     <option value="entrada">Entrada</option>
                                                                     <option value="intervalo" disabled>Intervalo</option>
                                                                     <option value="retorno" disabled>Retorno</option>
                                                                     <option value="saida" disabled>Saída</option>
                                                                 </select>`
 
-                                                          insertDomElments(batePonto, projeto, cliente, '--:--', '--:--', '--:--', '--:--', str)
-                                                          document.getElementById('spinner').hidden = true
-                                                      }
+                                                                insertDomElments(batePonto, projeto, cliente, '--:--', '--:--', '--:--', '--:--', str)
+                                                                document.getElementById('spinner').hidden = true
+                                                            }
 
-                                                  }).catch(erro => {
-                                                      document.getElementById('spinner').hidden = true
-                                                      console.log(erro)
-                                                  })
+                                                        }).catch(erro => {
+                                                            document.getElementById('spinner').hidden = true
+                                                            console.log(erro)
+                                                        })
 
-                                              }
-                                          }
-                                      })
+                                                    }
+                                                }
+                                            })
 
-                                  }
-                              }
-                          })
-                      }
-                  }).catch(erro => {
-                      document.getElementById('spinner').hidden = true
-                      console.error(erro);
-                  })
-
-
-              }
-          } else {
-              document.getElementById('spinner').hidden = true
-              document.getElementById('page1Area').innerHTML = 'Nenhum registro encontrado.'
-          }
-
-      }).catch(erro => {
-          console.log(erro)
-      })
-
-      function insertDomElments(batePonto, projeto, cliente, entrada, intervalo, retorno, saida, selectOpt) {
-
-          getUsers().then(data => {
-              let user = JSON.parse(data)
+                                        }
+                                    }
+                                })
+                            }
+                        }).catch(erro => {
+                            document.getElementById('spinner').hidden = true
+                            console.error(erro);
+                        })
 
 
-              if (selectOpt == undefined) {
-                  selectOpt = `<select id="selectPeriodo${batePonto[0]}" class="form-select border-4">
+                    }
+                } else {
+                    document.getElementById('spinner').hidden = true
+                    document.getElementById('page1Area').innerHTML = 'Nenhum registro encontrado.'
+                }
+
+            }).catch(erro => {
+                console.log(erro)
+            })
+
+            function insertDomElments(batePonto, projeto, cliente, entrada, intervalo, retorno, saida, selectOpt) {
+
+                getUsers().then(data => {
+                    let user = JSON.parse(data)
+
+
+                    if (selectOpt == undefined) {
+                        selectOpt = `<select id="selectPeriodo${batePonto[0]}" class="form-select border-4">
                                                                 <option value="entrada">Entrada</option>
                                                                 <option value="intervalo" disabled>Intervalo</option>
                                                                 <option value="retorno" disabled>Retorno</option>
                                                                 <option value="saida" disabled>Saída</option>
                                                             </select>`
-              }
+                    }
 
-              let btns = `<button type="button" class="btn btn-danger" id="salvar${batePonto[0]}" disabled>Salvar</button>
+                    let btns = `<button type="button" class="btn btn-danger" id="salvar${batePonto[0]}" disabled>Salvar</button>
             <button type="button" class="btn btn-danger" id="salvarComplete${batePonto[0]}"  data-bs-toggle="modal" data-bs-target="#finalizar${batePonto[0]}" disabled hidden>Continuar</button>`
 
-              if (retorno != '--:--') {
-                  btns = `<button type="button" class="btn btn-danger" id="salvar${batePonto[0]}" disabled hidden>Salvar</button>
+                    if (retorno != '--:--') {
+                        btns = `<button type="button" class="btn btn-danger" id="salvar${batePonto[0]}" disabled hidden>Salvar</button>
             <button type="button" class="btn btn-danger" id="salvarComplete${batePonto[0]}"  data-bs-toggle="modal" data-bs-target="#finalizar${batePonto[0]}" disabled >Continuar</button>`
-              }
+                    }
 
-              document.getElementById('spinner').hidden = true
+                    document.getElementById('spinner').hidden = true
 
-              document.getElementById('page1Area').innerHTML += `<div class="col-12 mb-4">
-        <div class="card p-4 shadow" style="border-top: 3px solid #E64F1C;">
+                    document.getElementById('page1Area').innerHTML += `<div class="col-12 mb-4" id="colBatePonto${batePonto[0]}">
+        <div class="card p-4 shadow" id="cardBatePonto${batePonto[0]}" style="border-top: 3px solid #E64F1C;">
+        <div class="row">
+            <div class="col-10">
             <h5>${getDayOfWeek(batePonto[4])}</h5>
+            </div>
+            <div class="col-2">
+                <button type="button" class="btn-invisibled text-dark text-decoration-none btnDeleteBatePontoAndRegisters" data-bs-toggle="modal" data-bs-target="#deletarBatePontoRegistro${batePonto[0]}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+  <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
+</svg>
+                            </button>
+            </div>
+
+            <!-- Modal deleteBatePonto -->
+        <div class="modal fade" id="deletarBatePontoRegistro${batePonto[0]}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header border-bottom-0">
+                        <h1 class="modal-title text-danger fs-5" id="staticBackdropLabel">Você realmente deseja deletar esses registros?</h1>
+                    </div>
+                    
+                    <div class="modal-footer border-top-0">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="btnCancelDeleteBatePonto${batePonto[0]}">Cancelar</button>
+                    <button type="button" class="btn btn-outline-danger" id="btnDeleteBatePonto${batePonto[0]}" onclick="deleteRegisterAndBatePonto('${batePonto[11]}', ${batePonto[0]})">Deletar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        </div>
+            
 
             <br>
 
@@ -221,7 +256,7 @@
                     </svg>
 
                     <div class="text-center mt-1">
-                            <span id="saida">
+                            <span id="saida${batePonto[0]}">
                                 ${saida}
                             </span>
                     </div>
@@ -229,7 +264,7 @@
             </div>
 
                 <div class="text-center mt-4">
-                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#newRegistro${batePonto[0]}">
+                <button type="button" class="btn btn-danger" id="cameraNewRegistro${batePonto[0]}" data-bs-toggle="modal" data-bs-target="#newRegistro${batePonto[0]}">
 
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
                         class="bi bi-camera-fill" viewBox="0 0 16 16">
@@ -245,7 +280,7 @@
     </div>
 
     <!-- Modal -->
-<div class="modal fade" id="newRegistro${batePonto[0]}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="newRegistro${batePonto[0]}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
         <div class="modal-header border-bottom-0">
@@ -258,7 +293,7 @@
             <div class="text-center">
 
                 <div class="position-relative mt-5">
-                    <video id="camera${batePonto[0]}" style="border-radius: 1rem; background-color: rgb(0, 0, 0);" width="100%" height="250" autoplay hidden>
+                    <video id="camera${batePonto[0]}" data-facing-mode="user" style="border-radius: 1rem; background-color: rgb(0, 0, 0);" height="250rem" width="250rem" autoplay hidden>
                     </video>
                     <div class="text-center position-absolute" style="top: 40%; left: 45%; width: 3rem; height: 3rem;" id="spinner${batePonto[0]}" hidden>
                         <div class="spinner-border text-danger" role="status">
@@ -268,7 +303,8 @@
                 </div>
 
                 <div class="position-relative">
-                    <canvas id="fotoCanvas${batePonto[0]}" style="border-radius: 1rem;" width="100%" height="250" hidden></canvas>
+                    <canvas id="fotoCanvas${batePonto[0]}" style="border-radius: 1rem; background-color: rgb(0, 0, 0);" height="250rem" width="250rem" hidden>
+                    </canvas>
                 </div>
 
                 <script>
@@ -292,18 +328,25 @@
                     </button>
 
                     <button class="btn btn-danger text-light mt-4 mb-4" id="capturarFoto${batePonto[0]}" style="border-radius: 12rem;" hidden>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
-                            fill="currentColor" class="bi bi-circle text-light" viewBox="0 0 16 16">
-                            <path
-                                d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-circle text-light" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
                         </svg>
                     </button>
                 </div>
-
-                <p>Capture uma imagem do seu ambiente atual para registrar o horário e a localização.
+                <div class="text-end" style="margin-top: -4.4rem; margin-right: 3.5rem;">
+                    <button class="btn-invisibled btn-sm small" id="inverterCamera${batePonto[0]}" style="transition: transform 0.5s ease;" hidden>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+                            <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41m-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9"/>
+                            <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5 5 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <p style="margin-top: 5rem;" id="p${batePonto[0]}">Capture uma imagem do seu ambiente atual para registrar o horário e a localização.
                 </p>
+                
+                </div>
 
-            </div>
 
         </div>
         <div class="modal-footer border-top-0">
@@ -313,6 +356,7 @@
     </div>
 </div>
 </div>
+
    
 <!-- Modal -->
 <div class="modal fade" id="finalizar${batePonto[0]}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -358,32 +402,37 @@ class="small">(opcional)</span></label>
 
 </div>
 <div class="modal-footer">
-<button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
+<button type="button" class="btn btn-outline-danger" id="cancel${batePonto[0]}" data-bs-dismiss="modal">Cancelar</button>
 <button type="button" class="btn btn-danger" id="save${batePonto[0]}">Finalizar</button>
 </div>
 </div>
 </div>
 </div>`
 
-          }).catch(erro => {
-              console.error(erro);
-          })
-      }
+                }).catch(erro => {
+                    console.error(erro);
+                })
+            }
 
-      function getDayOfWeek(dateString) {
-          const daysOfWeek = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
+            function getDayOfWeek(dateString) {
+                const daysOfWeek = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
 
-          // Corrige a data para o fuso horário local
-          const [year, month, day] = dateString.split('-');
-          const inputDate = new Date(year, month - 1, day);
+                // Corrige a data para o fuso horário local
+                const [year, month, day] = dateString.split('-');
+                const inputDate = new Date(year, month - 1, day);
 
-          const dayOfWeek = inputDate.getDay();
-          return daysOfWeek[dayOfWeek];
-      }
+                const dayOfWeek = inputDate.getDay();
+                return daysOfWeek[dayOfWeek];
+            }
 
-      function formatDate(dateString) {
-          const [year, month, day] = dateString.split('-');
-          return `${day} do ${month}`;
-      }
+            function formatDate(dateString) {
+                const [year, month, day] = dateString.split('-');
+                return `${day} do ${month}`;
+            }
+        }
 
-  }, 600);
+    }).catch(erro => {
+        console.error(erro);
+    })
+
+}, 600);

@@ -1,3 +1,5 @@
+carregationDb()
+
 getUsers().then(data => {
     let user = JSON.parse(data)
     const pathname = window.location.pathname;
@@ -7,12 +9,18 @@ getUsers().then(data => {
         if (parts.pop() != 'login.html') {
             location.href = 'login.html'
         }
+    } else {
+        if (parts.pop() == 'login.html') {
+            location.href = 'index.html'
+        }
     }
 }).catch(error => {
     console.log(error)
 })
 
 function validationLogin() {
+
+    log('Fazendo Login')
 
     document.getElementById('enterBtn').disabled = true
     document.getElementById('enterBtn').innerHTML = `<div class="spinner-border text-danger" role="status">
@@ -31,12 +39,12 @@ function validationLogin() {
     };
 
     fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Erro na requisição: ' + response.statusText);
@@ -45,18 +53,24 @@ function validationLogin() {
         })
         .then(data => {
             if (data.status != 'erro') {
+
+                log('Login realizado')
+
                 let dados = JSON.parse(data.colaborador_arr)
 
-                setUser(dados.id, dados.nome, dados.imagem_perfil, dados.funcao, dados.privilegio, dados.sobrenome, dados.telefone, dados.valor_hora, dados.valor_viagem, dados.valor_carteira).then(() => {
+                setUser(dados.id, dados.nome, dados.imagem_perfil, dados.funcao, dados.privilegio, dados.sobrenome, dados.telefone, dados.valor_hora, dados.valor_viagem, dados.valor_carteira, dados.retorno_automatico).then(() => {
 
                     location.href = 'index.html'
 
                 }).catch(error => {
-                    console.log('Erro na inserção: ' + error)
+                    console.log('Erro na inserção')
                 })
 
 
             } else {
+
+                log('Erro no login')
+
                 document.getElementById('enterBtn').disabled = false
                 document.getElementById('enterBtn').innerHTML = `Entrar`
 
@@ -65,6 +79,7 @@ function validationLogin() {
             }
         })
         .catch(error => {
+            log('Erro no login')
             console.error('Erro:', error);
         });
 }

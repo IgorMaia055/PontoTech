@@ -4,17 +4,37 @@ plugins {
 }
 
 android {
-    namespace = "com.pontotech.app"
+    namespace = "com.pontotech_cyber.app"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.pontotech.app"
+        applicationId = "com.pontotech_cyber.app"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
-
+        versionCode = 8
+        versionName = "2.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        create("release") {
+            keyAlias = "upload"
+            keyPassword = "cyber430655"
+            storeFile = file("E:\\my-pc\\ProjectAndroid\\v.2\\PontoTech\\pontotech-key.jks")
+            storePassword = "cyber430655"
+        }
+    }
+
+    buildTypes {
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = false
+            isDebuggable = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
     }
 
     compileOptions {
@@ -29,9 +49,13 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    buildToolsVersion = "34.0.0"
 }
 
 dependencies {
+    implementation("androidx.core:core-ktx:1.7.0")
+    implementation("androidx.appcompat:appcompat:1.4.0")
+    implementation("androidx.work:work-runtime-ktx:2.7.1")
     implementation("androidx.sqlite:sqlite:2.1.0")
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.appcompat:appcompat:1.4.0")

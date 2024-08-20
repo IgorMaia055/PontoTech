@@ -12,7 +12,11 @@
 
     <script src="db/sql.js"></script>
 
+    <script src="services/log.js"></script>
+
     <script src="services/login.js"></script>
+
+    <script src="services/sincronizar.js"></script>
 
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
@@ -20,40 +24,80 @@
     <script src="assets/js/jquery.js"></script>
 
     <style>
+        #inputPass {
+            min-height: 48px;
+            /* Ajusta a altura mínima */
+            padding: 10px;
+            /* Ajusta o padding para tornar o campo mais clicável */
+            font-size: 16px;
+            /* Opcional: ajusta o tamanho da fonte para manter a usabilidade */
+        }
+
+        .input-group-text {
+            height: 48px;
+            /* Garante que o ícone de olho tenha a mesma altura */
+            display: flex;
+            align-items: center;
+            /* Centraliza o ícone verticalmente */
+        }
+
+
+        #btnSolicitarAlteracao {
+            min-height: 48px;
+            padding-top: 4.5px;
+            padding-bottom: 4.5px;
+            display: inline-block;
+        }
+
+        #btnInformarProblema {
+            min-height: 48px;
+            padding-top: 4.5px;
+            padding-bottom: 4.5px;
+            display: inline-block;
+        }
+
         /* Esconde o input */
-        
-        input[type='file'] {
+
+        #imagem-usuario[type='file'] {
             display: none
         }
+
         /* Aparência que terá o seletor de arquivo */
-        
+
         #labelImage {
             margin: 10px;
             padding: 6px 20px
         }
-        
+
         .listBorder {
             border: 1px solid rgba(9, 9, 9, 0.156);
             background-color: rgba(255, 255, 255, 0.423);
             padding: 6px;
         }
-        
+
         .listInfo {
             border-radius: 10px;
         }
-        
+
         .btn-invisibled {
             border: 0;
             background-color: rgba(240, 248, 255, 0);
         }
-        
+
         .perfil {
             border-radius: 10rem;
         }
-        
+
         .img {
             border: 0;
             background-color: rgba(240, 248, 255, 0)
+        }
+
+        .navbarConfigPerfil {
+            width: 110%;
+            height: 30px;
+            position: relative;
+            text-align: end;
         }
     </style>
 </head>
@@ -64,6 +108,18 @@
         <h3>
             Por favor, Utilize um SmartPhone!
         </h3>
+    </div>
+
+    <div class="avisoBackup" id="avisoBackup" hidden>
+        <div class="d-block">
+            <h3>
+                Sincronizando seus registros
+            </h3>
+
+            <div>
+                <img src="assets/img/icons8-sincronização-da-nuvem.gif" alt="">
+            </div>
+        </div>
     </div>
 
     <div class="loading">
@@ -77,7 +133,8 @@
             <ul class="nav nav-pills" style="padding: 10px;">
                 <li class="nav-item me-5">
                     <a href="financeiro.html" class="text-decoration-none text-light" onclick="load()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-piggy-bank-fill" viewBox="0 0 16 16">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                            class="bi bi-piggy-bank-fill" viewBox="0 0 16 16">
                             <path
                                 d="M7.964 1.527c-2.977 0-5.571 1.704-6.32 4.125h-.55A1 1 0 0 0 .11 6.824l.254 1.46a1.5 1.5 0 0 0 1.478 1.243h.263c.3.513.688.978 1.145 1.382l-.729 2.477a.5.5 0 0 0 .48.641h2a.5.5 0 0 0 .471-.332l.482-1.351c.635.173 1.31.267 2.011.267.707 0 1.388-.095 2.028-.272l.543 1.372a.5.5 0 0 0 .465.316h2a.5.5 0 0 0 .478-.645l-.761-2.506C13.81 9.895 14.5 8.559 14.5 7.069q0-.218-.02-.431c.261-.11.508-.266.705-.444.315.306.815.306.815-.417 0 .223-.5.223-.461-.026a1 1 0 0 0 .09-.255.7.7 0 0 0-.202-.645.58.58 0 0 0-.707-.098.74.74 0 0 0-.375.562c-.024.243.082.48.32.654a2 2 0 0 1-.259.153c-.534-2.664-3.284-4.595-6.442-4.595m7.173 3.876a.6.6 0 0 1-.098.21l-.044-.025c-.146-.09-.157-.175-.152-.223a.24.24 0 0 1 .117-.173c.049-.027.08-.021.113.012a.2.2 0 0 1 .064.199m-8.999-.65a.5.5 0 1 1-.276-.96A7.6 7.6 0 0 1 7.964 3.5c.763 0 1.497.11 2.18.315a.5.5 0 1 1-.287.958A6.6 6.6 0 0 0 7.964 4.5c-.64 0-1.255.09-1.826.254ZM5 6.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0" />
                         </svg>
@@ -86,7 +143,8 @@
 
                 <li class="nav-item ms-4 me-5">
                     <a href="index.html" class="text-decoration-none text-light" onclick="load()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-house-fill" viewBox="0 0 16 16">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                            class="bi bi-house-fill" viewBox="0 0 16 16">
                             <path
                                 d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293z" />
                             <path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293z" />
@@ -96,7 +154,8 @@
 
                 <li class="nav-item ms-4">
                     <a href="perfil.html" class="text-decoration-none text-light" onclick="load()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                            class="bi bi-person-fill" viewBox="0 0 16 16">
                             <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
                         </svg>
                     </a>
@@ -106,48 +165,98 @@
     </nav>
 
     <div class="container-fluid" style="padding: 3rem;">
+        <div class="navbarConfigPerfil">
+            <button class="btn-invisibled" data-bs-toggle="modal" data-bs-target="#config">
+                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-list"
+                    viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5" />
+                </svg>
+            </button>
+        </div>
 
         <div class="text-center">
-            <button class="img" id="imgOnline" data-bs-toggle="modal" data-bs-target="#modalPerfil" hidden>
-                <svg xmlns="http://www.w3.org/2000/svg" width="95" height="95" fill="currentColor"
-                    class="bi bi-person-circle me-3" viewBox="0 0 16 16">
-                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
-                    <path fill-rule="evenodd"
-                        d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
-                </svg>
-            </button>
-            <button class="img" id="imgOffline" data-bs-toggle="modal" data-bs-target="#modalPerfil">
-                <svg xmlns="http://www.w3.org/2000/svg" width="95" height="95" fill="currentColor"
-                    class="bi bi-person-circle me-3" viewBox="0 0 16 16">
-                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
-                    <path fill-rule="evenodd"
-                        d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
-                </svg>
-            </button>
+            <div class="row">
+                <div class="col-4">
+                    <button class="img" id="imgOnline" data-bs-toggle="modal" data-bs-target="#modalPerfil" hidden>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="95" height="95" fill="currentColor"
+                            class="bi bi-person-circle me-3" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                            <path fill-rule="evenodd"
+                                d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                        </svg>
+                    </button>
+                    <button class="img" id="imgOffline" data-bs-toggle="modal" data-bs-target="#modalPerfil">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="95" height="95" fill="currentColor"
+                            class="bi bi-person-circle me-3" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                            <path fill-rule="evenodd"
+                                d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="col-8">
+                    <div class="text-start ms-2 mt-3">
+                        <h5 class="mt-2" id="nome_sobrenome"></h5>
 
-            <h5 class="mt-2" id="nome_sobrenome"></h5>
+                        <h6 id="funcao"></h6>
+                    </div>
+                </div>
+            </div>
 
-            <h6 id="funcao"></h6>
 
-            <p class="text-success mb-0 mt-3 small">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-telephone-fill" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd"
-                        d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877z" />
-                </svg> <span id="telefone"></span>
-            </p>
-            <p class="text-danger mt-4">
-                Local:
-                <span id="valor_hora"></span>
-            </p>
-            <p class="text-danger mt-2">
-                Viagem:
-                <span id="valor_viagem"></span>
-            </p>
+            <div class="card text-start mt-5 p-4">
+                <div class="row">
+
+
+                    <div class="col-6">
+                        <span class="d-inline-block text-danger p-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-clock-fill" viewBox="0 0 16 16">
+                                <path
+                                    d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z" />
+                            </svg>
+                        </span>
+
+                        <span id="valor_hora"></span>
+                    </div>
+                    <div class="col-6">
+                        <span class="d-inline-block text-danger p-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-car-front-fill" viewBox="0 0 16 16">
+                                <path
+                                    d="M2.52 3.515A2.5 2.5 0 0 1 4.82 2h6.362c1 0 1.904.596 2.298 1.515l.792 1.848c.075.175.21.319.38.404.5.25.855.715.965 1.262l.335 1.679q.05.242.049.49v.413c0 .814-.39 1.543-1 1.997V13.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1.338c-1.292.048-2.745.088-4 .088s-2.708-.04-4-.088V13.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1.892c-.61-.454-1-1.183-1-1.997v-.413a2.5 2.5 0 0 1 .049-.49l.335-1.68c.11-.546.465-1.012.964-1.261a.8.8 0 0 0 .381-.404l.792-1.848ZM3 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2m10 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2M6 8a1 1 0 0 0 0 2h4a1 1 0 1 0 0-2zM2.906 5.189a.51.51 0 0 0 .497.731c.91-.073 3.35-.17 4.597-.17s3.688.097 4.597.17a.51.51 0 0 0 .497-.731l-.956-1.913A.5.5 0 0 0 11.691 3H4.309a.5.5 0 0 0-.447.276L2.906 5.19Z" />
+                            </svg>
+                        </span>
+
+                        <span id="valor_viagem"></span>
+                    </div>
+
+                    <div class="col-12 mt-2">
+                        <span class="d-inline-block text-success p-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-telephone-fill" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877z" />
+                            </svg>
+                        </span>
+                        <span id="telefone"></span>
+                    </div>
+
+                    <div class="col-12 mt-2">
+                        <span id="retorno_automatico"></span>
+                    </div>
+
+                </div>
+
+            </div>
 
         </div>
 
-        <div class="card mt-5 position-relative">
-            <div class="position-absolute" style="left: 0; top: 0; z-index: 1; display: flex; justify-content: center; align-items: center; text-align: center; width: 100%; height: 100%; background-color: rgba(120, 120, 120, 0.332);" id="avisoConnection" hidden>
+        <div class="card mt-3 position-relative">
+            <div class="position-absolute"
+                style="left: 0; top: 0; z-index: 0.8; display: flex; justify-content: center; align-items: center; text-align: center; width: 100%; height: 100%; background-color: rgba(120, 120, 120, 0.332);"
+                id="avisoConnection" hidden>
                 <span class="text-danger">
                     <svg xmlns="http://www.w3.org/2000/svg" width="55" height="55" fill="currentColor"
                         class="bi bi-wifi-off" viewBox="0 0 16 16">
@@ -183,17 +292,6 @@
         </div>
 
 
-        <div class="text-center mt-5">
-            <a onclick="exit()" class="text-danger text-decoration-none">
-                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-power" viewBox="0 0 16 16">
-                    <path d="M7.5 1v7h1V1z" />
-                    <path
-                        d="M3 8.812a5 5 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812" />
-                </svg>
-            </a>
-        </div>
-
-
         <!-- Modal -->
         <div class="modal fade" id="modalPerfil" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -203,13 +301,15 @@
                     </div>
                     <div class="modal-body">
                         <div class="text-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="125" height="125" fill="currentColor" class="bi bi-person-circle me-3" viewBox="0 0 16 16">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="125" height="125" fill="currentColor"
+                                class="bi bi-person-circle me-3" viewBox="0 0 16 16">
                                 <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
                                 <path fill-rule="evenodd"
                                     d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
                             </svg>
 
-                            <label for='imagem-usuario' id="labelImage" class="btn btn-invisibled text-dark" style="position: absolute; right: 4rem; bottom: 0rem;">
+                            <label for='imagem-usuario' id="labelImage" class="btn btn-invisibled text-dark"
+                                style="position: absolute; right: 4rem; bottom: 0rem;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
                                     class="bi bi-camera-fill" viewBox="0 0 16 16">
                                     <path d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
@@ -223,6 +323,413 @@
                     </div>
                     <div class="modal-footer border-top-0">
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal config -->
+        <div class="modal fade" id="config" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-footer border-bottom-0">
+                        <button type="button" class="btn-invisibled" data-bs-dismiss="modal">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                class="bi bi-x-lg" viewBox="0 0 16 16">
+                                <path
+                                    d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="mb-5 text-center">
+                            <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#solicitarAlteracao"
+                                id="btnSolicitarAlteracao">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                    class="bi bi-chat-right-text mt-1 me-1" viewBox="0 0 16 16">
+                                    <path
+                                        d="M2 1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h9.586a2 2 0 0 1 1.414.586l2 2V2a1 1 0 0 0-1-1zm12-1a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z" />
+                                    <path
+                                        d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6m0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5" />
+                                </svg>
+                                Solicitar uma alteração
+                            </button>
+                        </div>
+                        <div class="mb-5 text-center">
+                            <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#modalInformarProblema"
+                                id="btnInformarProblema">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                    class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+                                    <path
+                                        d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
+                                </svg>
+                                Informar um problema
+                            </button>
+                        </div>
+
+                        <div class="mb-5 text-center">
+                            <button class="btn btn-light" id="btnLogs" onclick="enviarLogs()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                    class="bi bi-filetype-txt" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M14 4.5V14a2 2 0 0 1-2 2h-2v-1h2a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5zM1.928 15.849v-3.337h1.136v-.662H0v.662h1.134v3.337zm4.689-3.999h-.894L4.9 13.289h-.035l-.832-1.439h-.932l1.228 1.983-1.24 2.016h.862l.853-1.415h.035l.85 1.415h.907l-1.253-1.992zm1.93.662v3.337h-.794v-3.337H6.619v-.662h3.064v.662H8.546Z" />
+                                </svg>
+                                <span id="spanLog">
+                                    Enviar Relatório de Logs
+                                </span>
+                            </button>
+                        </div>
+
+                        <br>
+
+                        <div class="text-center">
+                            <p class="text-danger small" id="btnLimparLogs" onclick="limparLogs()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                    <path
+                                        d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
+                                </svg>
+
+                                <span id="spanLimparLogs">
+                                    Limpar Logs
+                                </span>
+                            </p>
+                        </div>
+
+                        <br>
+
+                        <div class="text-center">
+                            <strong id="version"></strong>
+                        </div>
+
+                        <script>
+                            var currentVersion = AndroidInterface.getCurrentVersion();
+                            document.getElementById("version").innerText = 'Versão: ' + currentVersion;
+                        </script>
+
+                    </div>
+                    <div class="modal-body border-top">
+                        <div class="text-center">
+                            <a onclick="exit()" class="text-danger text-decoration-none" data-bs-toggle="modal"
+                                data-bs-target="#config">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                    class="bi bi-power" viewBox="0 0 16 16">
+                                    <path d="M7.5 1v7h1V1z" />
+                                    <path
+                                        d="M3 8.812a5 5 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812" />
+                                </svg>
+                                <br> Sair
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Informar um problema -->
+        <div class="modal fade" id="modalInformarProblema" data-bs-backdrop="static" data-bs-keyboard="false"
+            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header border-bottom-0">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Informe um problema</h1>
+                    </div>
+                    <div class="modal-body">
+
+                        <label for="feedback">Feedback</label>
+                        <textarea name="feedback" id="feedback" class="form-control" row="5"></textarea>
+
+                    </div>
+                    <div class="modal-footer border-top-0">
+                        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-danger" id="enviarFeedback">Enviar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.getElementById('enviarFeedback').addEventListener('click', () => {
+                document.getElementById('enviarFeedback').innerHTML = `<div class="spinner-border text-light" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>`
+                getUsers().then(data => {
+                    let user = JSON.parse(data)
+
+                    $.ajax({
+                        url: "https://cyberrobotics.com.br/pontotech_api/setFeedback",
+                        method: 'POST',
+                        data: {
+                            'feedback': document.getElementById('feedback').value,
+                            'id_colaborador': user[0].values[0][1]
+                        },
+                        success: function () {
+                            document.getElementById('enviarFeedback').classList = 'btn btn-success'
+                            document.getElementById('enviarFeedback').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+      <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+    </svg>`
+
+                            setTimeout(() => {
+                                location.reload()
+                            }, 500);
+                        }
+                    })
+
+                }).catch(error => {
+                    console.error(error);
+                })
+            })
+        </script>
+
+        <!-- Modal Solicitar uma alteração  -->
+        <div class="modal fade" id="solicitarAlteracao" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header border-bottom-0">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Solicitar uma alteração</h1>
+                    </div>
+                    <div class="modal-body">
+
+                        <form id="formRequest">
+
+                            <input type="text" name="id_colaborador" id="id_colaborador" hidden>
+
+                            <script>
+                                getUsers().then(data => {
+                                    let user = JSON.parse(data)
+
+                                    document.getElementById('id_colaborador').value = user[0].values[0][1]
+                                }).catch(error => {
+                                    console.error(error);
+                                })
+                            </script>
+
+
+                            <label for="tipo">Tipo</label>
+                            <select name="tipo" id="tipo" class="form-select mb-3" oninput="viewOptions()">
+                                <option>Selecione o tipo</option>
+                                <option value="1">Esquecimento</option>
+                                <option value="2">Falta</option>
+                            </select>
+
+                            <div class="areaDescription" hidden>
+                                <label for="description">Descrição</label>
+                                <textarea name="description" id="description" class="form-control"
+                                    onkeyup="quantiCarater()" rows="5" required></textarea>
+                                <span id="quantiCaracteres">0</span> / <span>100</span>
+                            </div>
+
+                            <script>
+                                function quantiCarater() {
+                                    let description = document.getElementById('description').value
+
+                                    let n = 0
+                                    for (let i = 0; i < description.length; i++) {
+                                        if (description[i] != ' ' && description[i] != description[i - 1]) {
+                                            n++
+                                            document.getElementById('quantiCaracteres').innerHTML = n
+                                        }
+
+                                        if (n >= 100) {
+                                            document.getElementById('enviar').disabled = false
+                                        }
+                                    }
+                                }
+                            </script>
+
+                            <div id="areaEsquecimento" class="mt-3" hidden>
+                                <label for="projeto">Qual projeto foi o trabalho?</label>
+                                <input type="text" name="projeto" id="projeto" class="form-control mb-3">
+
+                                <hr>
+
+                                <p for="">Horários <span class="small">(Informe apenas os horários
+                                        esquecidos)</span></p>
+
+                                <label for="entrada">Entrada</label>
+                                <input type="time" id="entrada" name="entrada" class="form-control mb-3" value="0">
+
+                                <label for="intervalo">Intervalo</label>
+                                <input type="time" id="intervalo" name="intervalo" class="form-control mb-3" value="0">
+
+                                <label for="retorno">Retorno</label>
+                                <input type="time" id="retorno" name="retorno" class="form-control mb-3" value="0">
+
+                                <label for="saida">Saída</label>
+                                <input type="time" id="saida" name="saida" class="form-control mb-3" value="0">
+
+                                <hr>
+
+                                <label for="date">Data do esquecimento</label>
+                                <input type="date" name="date" id="date" class="form-control mb-3">
+
+                                <label for="diaria">Valor diaria <span class="small">(Opcional)</span></label>
+                                <input type="number" name="diaria" id="diaria" class="form-control mb-3">
+
+                                <label for="transporte">Custo de transporte <span
+                                        class="small">(Opcional)</span></label>
+                                <input type="number" name="transporte" id="transporte" class="form-control mb-3">
+
+                                <label for="km">Km <span class="small">(Opcional)</span></label>
+                                <input type="number" name="km" id="km" class="form-control mb-3">
+
+                                <label for="nome">Nome</label>
+                                <input type="text" id="nome" class="form-control mb-3">
+
+                                <label for="nome">Sobrenome</label>
+                                <input type="text" id="sobrenome" class="form-control mb-3">
+
+                                <label for="nacimento">Data de nacimento</label>
+                                <input type="date" id="nacimento" class="form-control mb-3">
+
+                                <label for="email">Email</label>
+                                <input type="email" id="email" class="form-control mb-3">
+
+                                <label for="telefone">Telefone</label>
+                                <input type="tel" id="telefone" class="form-control mb-3">
+                            </div>
+
+
+                            <div id="areaFalta" class="mt-3" hidden>
+                                <label for="documento">Documento de comprovação</label>
+                                <input type="file" name="documento" id="documento" accept="image/*"
+                                    class="form-control mb-3">
+                            </div>
+
+
+                            <script>
+                                function viewOptions() {
+                                    let tipo = document.getElementById('tipo').value
+                                    if (tipo == '1') {
+                                        document.querySelector('.areaDescription').hidden = false
+                                        document.getElementById('areaEsquecimento').hidden = false
+                                        document.getElementById('areaFalta').hidden = true
+
+                                        document.getElementById('projeto').required = true
+                                        document.getElementById('date').required = true
+                                        document.getElementById('nome').required = true
+                                        document.getElementById('sobrenome').required = true
+                                        document.getElementById('nacimento').required = true
+                                        document.getElementById('email').required = true
+                                        document.getElementById('telefone').required = true
+
+                                        document.getElementById('enviar').disabled = true
+                                    } else if (tipo == '2') {
+                                        document.querySelector('.areaDescription').hidden = false
+                                        document.getElementById('areaEsquecimento').hidden = true
+                                        document.getElementById('areaFalta').hidden = false
+
+                                        document.getElementById('projeto').required = false
+                                        document.getElementById('date').required = false
+                                        document.getElementById('nome').required = false
+                                        document.getElementById('sobrenome').required = false
+                                        document.getElementById('nacimento').required = false
+                                        document.getElementById('email').required = false
+                                        document.getElementById('telefone').required = false
+
+                                        document.getElementById('documento').required = true
+
+                                        document.getElementById('enviar').disabled = true
+                                    } else {
+                                        document.querySelector('.areaDescription').hidden = true
+                                        document.getElementById('areaEsquecimento').hidden = true
+                                        document.getElementById('areaFalta').hidden = true
+
+                                        document.getElementById('enviar').disabled = true
+                                    }
+                                }
+                            </script>
+                    </div>
+                    <div class="modal-footer border-top-0">
+                        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal"
+                            onclick="location.reload()">Cancelar</button>
+                        <button type="submit" class="btn btn-danger" id="enviar" disabled>Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <script>
+            document.getElementById('formRequest').addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                document.getElementById('enviar').disabled = true;
+                document.getElementById('enviar').innerHTML = `<div class="spinner-border text-light" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>`;
+
+                // Função que converte o arquivo para Base64
+                function convertFileToBase64(file, callback) {
+                    const reader = new FileReader();
+                    reader.onloadend = function () {
+                        callback(reader.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+
+                const fileInput = document.getElementById('documento');
+                if (fileInput.files[0]) {
+                    const file = fileInput.files[0];
+                    convertFileToBase64(file, function (base64Data) {
+                        sendAjaxRequest(base64Data);
+                    });
+                } else {
+                    // Se não houver arquivo, ainda assim enviar a solicitação
+                    sendAjaxRequest();
+                }
+
+                function sendAjaxRequest(documento = '') {
+                    $.ajax({
+                        url: "https://cyberrobotics.com.br/pontotech_api/setRequest",
+                        method: 'POST',
+                        data: {
+                            'id_colaborador': document.getElementById('id_colaborador').value,
+                            'description': document.getElementById('description').value,
+                            'projeto': document.getElementById('projeto').value,
+                            'entrada': document.getElementById('entrada').value,
+                            'intervalo': document.getElementById('intervalo').value,
+                            'retorno': document.getElementById('retorno').value,
+                            'saida': document.getElementById('saida').value,
+                            'date': document.getElementById('date').value,
+                            'diaria': document.getElementById('diaria').value,
+                            'transporte': document.getElementById('transporte').value,
+                            'km': document.getElementById('km').value,
+                            'documento': documento // Dados em Base64 ou string vazia
+                        },
+                        success: function (response) {
+                            console.log(response);
+
+                            document.getElementById('enviar').classList = "btn btn-success";
+                            document.getElementById('enviar').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+                </svg>`;
+
+                            setTimeout(() => {
+                                location.reload();
+                            }, 500);
+                        }
+                    });
+                }
+            });
+
+        </script>
+
+        <!-- Modal exit -->
+        <div class="modal fade" id="confirmationExit" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header border-bottom-0">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Deseja deslogar da sua conta?</h1>
+                    </div>
+                    <div class="modal-footer border-top-0">
+                        <button type="button" class="btn btn-outline-danger" onclick="exit()">Sair</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
                     </div>
                 </div>
             </div>
@@ -264,21 +771,135 @@
 </body>
 
 <script>
-    isOnline().then((online) => {
-        if (online) {
-            getUsers().then(data => {
-                let user = JSON.parse(data)
 
-                buscaImgDbOnline(user[0].values[0][1])
+    function limparLogs() {
+        document.getElementById('btnLimparLogs').disabled = true
+        document.getElementById('spanLimparLogs').innerHTML = 'Limpando...'
 
-            }).catch(erro => {
-                console.error(erro);
-            })
-        } else {
-            document.getElementById('imgOffline').hidden = false
-            document.getElementById('imgOnline').hidden = true
+        deleteAllLogs().then(() => {
+            setTimeout(() => {
+                document.getElementById('btnLimparLogs').disabled = false
+                document.getElementById('spanLimparLogs').innerHTML = 'Limpeza concluída'
+            }, 1000);
+        }).catch(() => {
+            document.getElementById('btnLimparLogs').disabled = false
+            document.getElementById('spanLimparLogs').innerHTML = 'Limpeza concluída'
+        })
+    }
+
+    let n = 1
+
+    function enviarLogs() {
+        document.getElementById('btnLogs').disabled = true
+        document.getElementById('spanLog').innerHTML = 'Enviando...'
+
+        getLog().then(data => {
+            let relatorio = JSON.parse(data)
+            console.log(relatorio);
+
+            for (let i = 0; i < relatorio[0].values.length; i++) {
+                $.ajax({
+                    url: "https://cyberrobotics.com.br/pontotech_api/setDbOnlineLog",
+                    method: 'POST',
+                    data: {
+                        'id_colaborador': document.getElementById('id_colaborador').value,
+                        'txt': relatorio[0].values[i][1],
+                        'date': relatorio[0].values[i][2]
+                    },
+                    success: function (response) {
+                        console.log(response);
+
+                        messageSuccess()
+                    }
+                });
+            }
+
+        }).catch(erro => {
+            document.getElementById('spanLog').innerHTML = 'Nenhum log encontrado'
+            document.getElementById('btnLogs').disabled = false
+        })
+    }
+
+    function messageSuccess() {
+        if (n == 1) {
+            setTimeout(() => {
+                document.getElementById('spanLog').innerHTML = 'Enviado com sucesso!'
+
+                setTimeout(() => {
+                    document.getElementById('btnLogs').disabled = false
+                    document.getElementById('spanLog').innerHTML = 'Relatório já enviado'
+                }, 1000);
+            }, 500);
+
+            n++
         }
-    });
+    }
+
+    let confereConnectionInterval = setInterval(() => {
+        confereRede()
+    }, 1000);
+
+    confereRede()
+    function confereRede() {
+        getUsers().then(data => {
+            let user = JSON.parse(data)
+
+            document.getElementById('nome_sobrenome').innerHTML = user[0].values[0][2] + ' ' + user[0].values[0][6]
+            document.getElementById('funcao').innerHTML = user[0].values[0][4]
+            document.getElementById('telefone').innerHTML = (user[0].values[0][7] == '' ? 'Não informado' : user[0].values[0][7])
+            document.getElementById('valor_hora').innerHTML = user[0].values[0][8].toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            })
+            document.getElementById('valor_viagem').innerHTML = user[0].values[0][9].toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            })
+            if (user[0].values[0][11] == 1) {
+                document.getElementById('retorno_automatico').innerHTML = `<div class="form-check form-switch">
+  <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckCheckedDisabled" checked disabled>
+  <label class="form-check-label" for="flexSwitchCheckCheckedDisabled">Retorno automático ativado</label>
+</div>`
+            } else {
+                document.getElementById('retorno_automatico').innerHTML = `<div class="form-check form-switch">
+  <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDisabled" disabled>
+  <label class="form-check-label" for="flexSwitchCheckDisabled">Retorno automático inativo</label>
+</div>`
+            }
+
+            isOnline().then((online) => {
+                if (online) {
+                    buscaImgDbOnline(user[0].values[0][1])
+
+                    document.getElementById('imgOffline').hidden = true
+                    document.getElementById('imgOnline').hidden = false
+
+                    document.getElementById('btnSolicitarAlteracao').disabled = false
+                    document.getElementById('btnInformarProblema').disabled = false
+                    document.getElementById('btnLogs').disabled = false
+
+                    document.getElementById('avisoConnection').hidden = true
+
+                    getInfoUserDbOnline(user[0].values[0][1]);
+
+                } else {
+                    clearInterval(confereConnectionInterval)
+                    document.getElementById('avisoConnection').hidden = false
+
+                    document.getElementById('imgOffline').hidden = false
+                    document.getElementById('imgOnline').hidden = true
+
+                    document.getElementById('btnSolicitarAlteracao').disabled = true
+                    document.getElementById('btnInformarProblema').disabled = true
+                    document.getElementById('btnLogs').disabled = true
+                }
+            });
+
+
+        }).catch(erro => {
+            console.error(erro);
+        })
+    }
 
 
     function converterImagem() {
@@ -291,8 +912,9 @@
 
             var lerArquivo = new FileReader();
 
-            lerArquivo.onload = function(arquivoCarregado) {
+            lerArquivo.onload = function (arquivoCarregado) {
                 var imagemBase64 = arquivoCarregado.target.result;
+                console.log(imagemBase64);
 
                 getUsers().then(data => {
                     let user = JSON.parse(data)
@@ -308,41 +930,16 @@
         }
     }
 
-    getUsers().then(data => {
-        let user = JSON.parse(data)
 
-        document.getElementById('nome_sobrenome').innerHTML = user[0].values[0][2] + ' ' + user[0].values[0][6]
-        document.getElementById('funcao').innerHTML = user[0].values[0][4]
-        document.getElementById('telefone').innerHTML = (user[0].values[0][7] == '' ? 'Não informado' : user[0].values[0][7])
-        document.getElementById('valor_hora').innerHTML = user[0].values[0][8].toLocaleString('pt-BR', {
-            style: 'currency',
-            currency: 'BRL'
-        })
-        document.getElementById('valor_viagem').innerHTML = user[0].values[0][9].toLocaleString('pt-BR', {
-            style: 'currency',
-            currency: 'BRL'
-        })
-
-        isOnline().then((online) => {
-            if (online) {
-                getInfoUserDbOnline(user[0].values[0][1]);
-            } else {
-                document.getElementById('avisoConnection').hidden = false
-            }
-        });
-
-    }).catch(erro => {
-        console.error(erro);
-    })
 
     function exit() {
         deleteAllProjetos()
         deleteAllClientes()
-        deleteAllBatePonto()
-        deleteAllRegistros()
-
         deleteAllUser()
-        location.href = 'login.html'
+
+        setTimeout(() => {
+            location.href = 'login.html'
+        }, 500);
     }
 
     async function getInfoUserDbOnline(id_colaborador) {
@@ -386,12 +983,12 @@
         };
 
         fetch(apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Erro na requisição: ' + response.statusText);
